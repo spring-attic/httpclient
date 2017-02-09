@@ -19,11 +19,10 @@ package org.springframework.cloud.stream.app.httpclient.processor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.messaging.support.GenericMessage;
@@ -48,9 +47,8 @@ import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.
  * @author Gary Russell
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {HttpClientProcessorTests.HttpClientProcessorApplication.class,
+@SpringBootTest(classes = {HttpClientProcessorTests.HttpClientProcessorApplication.class,
 	HttpClientProcessorTests.AdditionalController.class})
-@WebIntegrationTest(randomPort = true)
 @DirtiesContext
 public abstract class HttpClientProcessorTests {
 
@@ -61,7 +59,7 @@ public abstract class HttpClientProcessorTests {
 	protected MessageCollector messageCollector;
 
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'"})
 	public static class TestRequestGET extends HttpClientProcessorTests {
 
@@ -73,7 +71,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = "httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/' + payload")
 	public static class TestRequestGETWithUrlExpressionUsingMessage extends HttpClientProcessorTests {
 
@@ -85,7 +83,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {
 					"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
 					"httpclient.body={\"foo\":\"bar\"}",
@@ -102,7 +100,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {
 					"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
 					"httpclient.httpMethod=POST"})
@@ -118,7 +116,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {
 					"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/headers'",
 					"httpclient.headersExpression={Key1:'value1',Key2:'value2'}"})
@@ -133,7 +131,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {
 					"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
 					"httpclient.httpMethod=POST",
@@ -150,7 +148,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@IntegrationTest(
+	@SpringBootTest(
 			value = {
 					"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
 					"httpclient.httpMethod=POST",
