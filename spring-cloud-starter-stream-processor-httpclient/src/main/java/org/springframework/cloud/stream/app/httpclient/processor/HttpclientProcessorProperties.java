@@ -21,6 +21,7 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.common.LiteralExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.http.HttpMethod;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
@@ -32,6 +33,7 @@ import javax.validation.constraints.NotNull;
  * @author Mark Fisher
  */
 @ConfigurationProperties("httpclient")
+@Validated
 public class HttpclientProcessorProperties {
 
 	private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.GET;
