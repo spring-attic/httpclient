@@ -76,7 +76,8 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@TestPropertySource(properties = "httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/' + payload")
+	@TestPropertySource(
+			properties = "httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/' + payload")
 	public static class TestRequestGETWithUrlExpressionUsingMessageTests extends HttpClientProcessorTests {
 
 		@Test
@@ -133,7 +134,8 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
-			"httpclient.httpMethod=POST", "httpclient.headersExpression={Accept:'application/octet-stream'}",
+			"httpclient.httpMethod=POST",
+			"httpclient.headersExpression={Accept:'application/octet-stream'}",
 			"httpclient.expectedResponseType=byte[]"
 	})
 	public static class TestRequestWithReturnTypeTests extends HttpClientProcessorTests {
@@ -148,7 +150,8 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-			"httpclient.httpMethod=POST", "httpclient.replyExpression=body.substring(3,8)"
+			"httpclient.httpMethod=POST",
+			"httpclient.replyExpression=body.substring(3,8)"
 	})
 	public static class TestRequestWithResultExtractorTests extends HttpClientProcessorTests {
 
@@ -162,7 +165,8 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/json'",
-			"httpclient.httpMethod=POST", "httpclient.headersExpression={'Content-Type':'application/json'}"
+			"httpclient.httpMethod=POST",
+			"httpclient.headersExpression={'Content-Type':'application/json'}"
 
 	})
 	public static class TestRequestWithJsonPostTests extends HttpClientProcessorTests {
