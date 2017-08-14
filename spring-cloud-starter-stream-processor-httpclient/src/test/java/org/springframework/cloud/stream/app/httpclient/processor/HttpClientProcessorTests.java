@@ -24,7 +24,6 @@ import static org.springframework.cloud.stream.test.matcher.MessageQueueMatcher.
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,10 +35,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * Tests for Http Client Processor.
@@ -48,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Waldemar Hummer
  * @author Mark Fisher
  * @author Gary Russell
+ * @author David Turanski
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -61,7 +64,7 @@ public abstract class HttpClientProcessorTests {
 	protected MessageCollector messageCollector;
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'"
 	})
 	public static class TestRequestGETTests extends HttpClientProcessorTests {
 
@@ -73,8 +76,7 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
-	@TestPropertySource(properties =
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/' + payload")
+	@TestPropertySource(properties = "httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/' + payload")
 	public static class TestRequestGETWithUrlExpressionUsingMessageTests extends HttpClientProcessorTests {
 
 		@Test
@@ -86,9 +88,8 @@ public abstract class HttpClientProcessorTests {
 	}
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-		"httpclient.body={\"foo\":\"bar\"}",
-		"httpclient.httpMethod=POST"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
+			"httpclient.body={\"foo\":\"bar\"}", "httpclient.httpMethod=POST"
 	})
 	public static class TestRequestPOSTTests extends HttpClientProcessorTests {
 
@@ -96,72 +97,81 @@ public abstract class HttpClientProcessorTests {
 		public void testRequest() {
 			channels.input().send(new GenericMessage<Object>("..."));
 			assertThat(messageCollector.forChannel(channels.output()),
-					receivesPayloadThat(Matchers.allOf(
-							containsString("foo"), containsString("bar"))));
+					receivesPayloadThat(Matchers.allOf(containsString("foo"), containsString("bar"))));
 		}
 
 	}
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-		"httpclient.httpMethod=POST"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
+			"httpclient.httpMethod=POST"
 	})
 	public static class TestRequestPOSTWithBodyExpressionTests extends HttpClientProcessorTests {
 
 		@Test
 		public void testRequest() {
 			channels.input().send(new GenericMessage<Object>("{\"foo\":\"bar\"}"));
-			assertThat(messageCollector.forChannel(channels.output()),
-					receivesPayloadThat(Matchers.allOf(containsString("Hello"),
-							containsString("foo"), containsString("bar"))));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(
+					Matchers.allOf(containsString("Hello"), containsString("foo"), containsString("bar"))));
 		}
 
 	}
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/headers'",
-		"httpclient.headersExpression={Key1:'value1',Key2:'value2'}"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/headers'",
+			"httpclient.headersExpression={Key1:'value1',Key2:'value2'}"
 	})
 	public static class TestRequestWithHeadersTests extends HttpClientProcessorTests {
 
 		@Test
 		public void testRequest() {
 			channels.input().send(new GenericMessage<Object>("..."));
-			assertThat(messageCollector.forChannel(channels.output()),
-					receivesPayloadThat(is("value1 value2")));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("value1 value2")));
 		}
 
 	}
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
-		"httpclient.httpMethod=POST",
-		"httpclient.headersExpression={Accept:'application/octet-stream'}",
-		"httpclient.expectedResponseType=byte[]"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
+			"httpclient.httpMethod=POST", "httpclient.headersExpression={Accept:'application/octet-stream'}",
+			"httpclient.expectedResponseType=byte[]"
 	})
 	public static class TestRequestWithReturnTypeTests extends HttpClientProcessorTests {
 
 		@Test
 		public void testRequest() {
 			channels.input().send(new GenericMessage<Object>("hello"));
-			assertThat(messageCollector.forChannel(channels.output()),
-					receivesPayloadThat(Matchers.isA(byte[].class)));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(Matchers.isA(byte[].class)));
 		}
 
 	}
 
 	@TestPropertySource(properties = {
-		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-		"httpclient.httpMethod=POST",
-		"httpclient.replyExpression=body.substring(3,8)"
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
+			"httpclient.httpMethod=POST", "httpclient.replyExpression=body.substring(3,8)"
 	})
 	public static class TestRequestWithResultExtractorTests extends HttpClientProcessorTests {
 
 		@Test
 		public void testRequest() {
 			channels.input().send(new GenericMessage<Object>("hi"));
-			assertThat(messageCollector.forChannel(channels.output()),
-					receivesPayloadThat(is("lo hi")));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("lo hi")));
+		}
+
+	}
+
+	@TestPropertySource(properties = {
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/json'",
+			"httpclient.httpMethod=POST", "httpclient.headersExpression={'Content-Type':'application/json'}"
+
+	})
+	public static class TestRequestWithJsonPostTests extends HttpClientProcessorTests {
+
+		@Test
+		public void testRequest() {
+
+			channels.input().send(new GenericMessage<>("{\"name\":\"Fred\",\"age\":41}"));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("id")));
 		}
 
 	}
@@ -180,6 +190,11 @@ public abstract class HttpClientProcessorTests {
 		@RequestMapping("/headers")
 		public String headers(@RequestHeader("Key1") String key1, @RequestHeader("Key2") String key2) {
 			return key1 + " " + key2;
+		}
+
+		@PostMapping("/json")
+		public String json(@RequestBody Map<String, Object> request) {
+			return "id";
 		}
 
 	}
