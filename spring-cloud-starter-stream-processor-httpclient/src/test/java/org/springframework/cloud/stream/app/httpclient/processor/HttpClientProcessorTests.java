@@ -91,7 +91,8 @@ public abstract class HttpClientProcessorTests {
 	@TestPropertySource(properties = {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
 		"httpclient.body={\"foo\":\"bar\"}",
-		"httpclient.httpMethod=POST" })
+		"httpclient.httpMethod=POST"
+	})
 	public static class TestRequestPOSTTests extends HttpClientProcessorTests {
 
 		@Test
@@ -105,7 +106,8 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-		"httpclient.httpMethod=POST" })
+		"httpclient.httpMethod=POST"
+	})
 	public static class TestRequestPOSTWithBodyExpressionTests extends HttpClientProcessorTests {
 
 		@Test
@@ -119,7 +121,8 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/headers'",
-		"httpclient.headersExpression={Key1:'value1',Key2:'value2'}" })
+		"httpclient.headersExpression={Key1:'value1',Key2:'value2'}"
+	})
 	public static class TestRequestWithHeadersTests extends HttpClientProcessorTests {
 
 		@Test
@@ -132,8 +135,10 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
-		"httpclient.httpMethod=POST", "httpclient.headersExpression={Accept:'application/octet-stream'}",
-		"httpclient.expectedResponseType=byte[]" })
+		"httpclient.httpMethod=POST",
+		"httpclient.headersExpression={Accept:'application/octet-stream'}",
+		"httpclient.expectedResponseType=byte[]"
+	})
 	public static class TestRequestWithReturnTypeTests extends HttpClientProcessorTests {
 
 		@Test
@@ -146,7 +151,9 @@ public abstract class HttpClientProcessorTests {
 
 	@TestPropertySource(properties = {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/greet'",
-		"httpclient.httpMethod=POST", "httpclient.replyExpression=body.substring(3,8)" })
+		"httpclient.httpMethod=POST",
+		"httpclient.replyExpression=body.substring(3,8)"
+	})
 	public static class TestRequestWithResultExtractorTests extends HttpClientProcessorTests {
 
 		@Test
