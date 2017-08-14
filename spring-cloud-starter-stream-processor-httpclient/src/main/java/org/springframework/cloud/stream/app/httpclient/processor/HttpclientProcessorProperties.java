@@ -84,6 +84,10 @@ public class HttpclientProcessorProperties {
 		this.url = url;
 	}
 
+	public String getUrl() {
+		return this.url;
+	}
+
 	public Expression getUrlExpression() {
 		return urlExpression != null ? urlExpression
 				: new LiteralExpression(this.url);
