@@ -3,6 +3,34 @@
 
 A processor app that makes requests to an HTTP resource and emits the response body as a message payload. This processor can be combined, e.g., with a time source app to periodically poll results from a HTTP resource.
 
+== Input
+=== Headers
+Any Required HTTP headers must be explicitly set via the `headers-expression` property. See examples below.
+Header values may also be used to construct the request body when referenced in the `body-expression` property.
+
+=== Payload
+The Message payload may be any Java type. Generally, standard Java types such as String(e.g., JSON, XML) or byte array
+payloads are recommended. A Map should work without too much effort. By default, the payload will become HTTP request
+body (if needed). You may also set the `body-expression` property to construct a value derived from the Message, or
+`body` to use a static (literal) value.
+
+Internally, the processor uses
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html#exchange-org.springframework.http.RequestEntity-java.lang.Class-[RestTemplate.exchange(...)].
+
+The RestTemplate supports Jackson JSON serialization to support any request and response types if necessary. The
+`expected-response-type` property, `String.class` by default, may be set to any class in your application
+class path (Note user defined payload types will require adding required dependencies to your pom file).
+
+== Output
+
+=== Headers
+No HTTP message headers are mapped to the outbound Message.
+=== Payload
+The raw output object is
+https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/http/ResponseEntity.html[ReponseEntity<?>]
+ any of its fields (e.g., `body`, `headers`) or accessor methods (`statusCode`) may be referenced as part of the
+ `reply-expression`. By default the outbound Message payload is the response body.
+
 == Options
 
 The **$$httpclient$$** $$processor$$ has the following options:
@@ -14,6 +42,7 @@ $$httpclient.expected-response-type$$:: $$The type used to interpret the respons
 $$httpclient.headers-expression$$:: $$A SpEL expression used to derive the http headers map to use.$$ *($$Expression$$, default: `$$<none>$$`)*
 $$httpclient.http-method$$:: $$The kind of http method to use.$$ *($$HttpMethod$$, default: `$$<none>$$`, possible values: `GET`,`HEAD`,`POST`,`PUT`,`PATCH`,`DELETE`,`OPTIONS`,`TRACE`)*
 $$httpclient.reply-expression$$:: $$A SpEL expression used to compute the final result, applied against the whole http response.$$ *($$Expression$$, default: `$$body$$`)*
+$$httpclient.url$$:: $$The URL to issue an http request to, as a static value.$$ *($$String$$, default: `$$<none>$$`)*
 $$httpclient.url-expression$$:: $$A SpEL expression against incoming message to determine the URL to use.$$ *($$Expression$$, default: `$$<none>$$`)*
 //end::configuration-properties[]
 
@@ -23,3 +52,13 @@ $$httpclient.url-expression$$:: $$A SpEL expression against incoming message to 
 ```
 $> mvn package
 ```
+
+== Examples
+
+[source,bash]
+----
+$java -jar httpclient-processor.jar --httpclient.url=http://someurl  --httpclient.http-method=POST --httpclient.headers-expression="{'Content-Type':'application/json'}"
+
+$java -jar httpclient-processor.jar --httpclient.url=http://someurl  --httpclient.reply-expression="statusCode.name()"
+
+----
