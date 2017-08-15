@@ -18,7 +18,7 @@ Internally, the processor uses
 https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html#exchange-org.springframework.http.RequestEntity-java.lang.Class-[RestTemplate.exchange(...)].
 
 The RestTemplate supports Jackson JSON serialization to support any request and response types if necessary. The
-`expected-response-type` property (`String.class` by default). )may be set to any class in your application
+`expected-response-type` property, `String.class` by default, may be set to any class in your application
 class path (Note user defined payload types will require adding required dependencies to your pom file).
 
 == Output
