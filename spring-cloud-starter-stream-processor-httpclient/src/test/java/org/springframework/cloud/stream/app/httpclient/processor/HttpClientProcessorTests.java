@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 the original author or authors.
+ * Copyright 2015-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -51,6 +51,7 @@ import java.util.Map;
  * @author Mark Fisher
  * @author Gary Russell
  * @author David Turanski
+ * @author Chris Schaefer
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -137,7 +138,8 @@ public abstract class HttpClientProcessorTests {
 		"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') +'/greet'",
 		"httpclient.httpMethod=POST",
 		"httpclient.headersExpression={Accept:'application/octet-stream'}",
-		"httpclient.expectedResponseType=byte[]"
+		"httpclient.expectedResponseType=byte[]",
+		"spring.cloud.stream.bindings.output.contentType=application/octet-stream"
 	})
 	public static class TestRequestWithReturnTypeTests extends HttpClientProcessorTests {
 
@@ -204,10 +206,11 @@ public abstract class HttpClientProcessorTests {
 	}
 
 	@SpringBootApplication
-	@EnableWebSecurity
+	@EnableAutoConfiguration(exclude = {
+			org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class
+	})
 	@Import(AdditionalController.class)
 	public static class HttpClientProcessorApplication {
 
 	}
-
 }
