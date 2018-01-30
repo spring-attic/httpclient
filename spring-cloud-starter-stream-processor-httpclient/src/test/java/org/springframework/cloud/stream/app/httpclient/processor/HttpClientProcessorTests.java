@@ -207,7 +207,7 @@ public abstract class HttpClientProcessorTests {
 
 	@SpringBootApplication
 	@EnableAutoConfiguration(exclude = {
-			org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class
+			org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
 	})
 	@Import(AdditionalController.class)
 	public static class HttpClientProcessorApplication {
