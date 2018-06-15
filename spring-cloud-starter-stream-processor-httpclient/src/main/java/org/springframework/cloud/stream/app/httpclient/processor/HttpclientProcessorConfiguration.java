@@ -89,7 +89,13 @@ public class HttpclientProcessorConfiguration {
 				}
 
 				Class<?> responseType = properties.getExpectedResponseType();
-				HttpMethod method = properties.getHttpMethod();
+				HttpMethod method = null;
+				if (properties.getHttpMethodExpression() != null) {
+					method = properties.getHttpMethodExpression().getValue(message, HttpMethod.class);
+				}
+				else {
+					method = properties.getHttpMethod();
+				}
 				String url = properties.getUrlExpression().getValue(message, String.class);
 				Object body = null;
 				if (properties.getBody() != null) {

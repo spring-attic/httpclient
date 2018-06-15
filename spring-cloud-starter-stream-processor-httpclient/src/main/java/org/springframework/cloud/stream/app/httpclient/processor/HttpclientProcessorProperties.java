@@ -55,6 +55,12 @@ public class HttpclientProcessorProperties {
 	 */
 	private HttpMethod httpMethod = DEFAULT_HTTP_METHOD;
 
+
+	/**
+	 * A SpEL expression to derive the request method from the incoming message.
+	 */
+	private Expression httpMethodExpression;
+
 	/**
 	 * The (static) request body; if neither this nor bodyExpression is provided, the payload will be used.
 	 */
@@ -104,6 +110,14 @@ public class HttpclientProcessorProperties {
 
 	public void setHttpMethod(HttpMethod httpMethod) {
 		this.httpMethod = httpMethod;
+	}
+
+	public Expression getHttpMethodExpression() {
+		return httpMethodExpression;
+	}
+
+	public void setHttpMethodExpression(Expression httpMethodExpression) {
+		this.httpMethodExpression = httpMethodExpression;
 	}
 
 	public Object getBody() {

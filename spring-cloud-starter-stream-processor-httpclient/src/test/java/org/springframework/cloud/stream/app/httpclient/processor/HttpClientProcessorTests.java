@@ -182,6 +182,22 @@ public abstract class HttpClientProcessorTests {
 
 	}
 
+	@TestPropertySource(properties = {
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/json'",
+			"httpclient.httpMethodExpression=#jsonPath(payload,'$.myMethod')", "httpclient.headersExpression={'Content-Type':'application/json'}"
+
+	})
+	public static class TestRequestWithMethodExpressionTests extends HttpClientProcessorTests {
+
+		@Test
+		public void testRequest() {
+
+			channels.input().send(new GenericMessage<>("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}"));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("id")));
+		}
+
+	}
+
 	@RestController
 	public static class AdditionalController {
 
