@@ -52,6 +52,7 @@ import java.util.Map;
  * @author Gary Russell
  * @author David Turanski
  * @author Chris Schaefer
+ * @author Christian Tzolov
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
