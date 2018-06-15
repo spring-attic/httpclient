@@ -52,6 +52,7 @@ import java.util.Map;
  * @author Gary Russell
  * @author David Turanski
  * @author Chris Schaefer
+ * @author Christian Tzolov
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -177,6 +178,22 @@ public abstract class HttpClientProcessorTests {
 		public void testRequest() {
 
 			channels.input().send(new GenericMessage<>("{\"name\":\"Fred\",\"age\":41}"));
+			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("id")));
+		}
+
+	}
+
+	@TestPropertySource(properties = {
+			"httpclient.urlExpression='http://localhost:' + @environment.getProperty('local.server.port') + '/json'",
+			"httpclient.httpMethodExpression=#jsonPath(payload,'$.myMethod')", "httpclient.headersExpression={'Content-Type':'application/json'}"
+
+	})
+	public static class TestRequestWithMethodExpressionTests extends HttpClientProcessorTests {
+
+		@Test
+		public void testRequest() {
+
+			channels.input().send(new GenericMessage<>("{\"name\":\"Fred\",\"age\":41, \"myMethod\":\"POST\"}"));
 			assertThat(messageCollector.forChannel(channels.output()), receivesPayloadThat(is("id")));
 		}
 

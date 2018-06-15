@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 the original author or authors.
+ * Copyright 2015-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.springframework.web.client.RestTemplate;
  * @author Waldemar Hummer
  * @author Mark Fisher
  * @author Gary Russell
+ * @author Christian Tzolov
  */
 @Configuration
 @EnableBinding(Processor.class)
@@ -89,7 +90,13 @@ public class HttpclientProcessorConfiguration {
 				}
 
 				Class<?> responseType = properties.getExpectedResponseType();
-				HttpMethod method = properties.getHttpMethod();
+				HttpMethod method = null;
+				if (properties.getHttpMethodExpression() != null) {
+					method = properties.getHttpMethodExpression().getValue(message, HttpMethod.class);
+				}
+				else {
+					method = properties.getHttpMethod();
+				}
 				String url = properties.getUrlExpression().getValue(message, String.class);
 				Object body = null;
 				if (properties.getBody() != null) {
