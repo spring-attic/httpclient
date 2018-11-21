@@ -51,6 +51,9 @@
 							<extraTestConfigClass>org.springframework.cloud.stream.app.test.httpclient.HttpClientProcessorTestConfiguration.class</extraTestConfigClass>
 						</httpclient-processor>
 					</generatedApps>
+					<additionalAppProperties>
+						<additionalAppProperty>spring.cloud.stream.bindings.input.contentType=text/plain</additionalAppProperty>
+					</additionalAppProperties>
 				</configuration>
 			</plugin>
 		</plugins>
