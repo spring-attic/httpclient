@@ -95,7 +95,7 @@ public class HttpclientProcessorFunctionConfiguration {
 				uri = new URI(url);
 			}
 			catch (URISyntaxException e) {
-				throw new RuntimeException(e.getMessage(), e);
+				throw new IllegalStateException(e.getMessage(), e);
 			}
 			RequestEntity<?> request = new RequestEntity<>(body, headers, method, uri);
 			ResponseEntity<?> response = restTemplate.exchange(request, responseType);
