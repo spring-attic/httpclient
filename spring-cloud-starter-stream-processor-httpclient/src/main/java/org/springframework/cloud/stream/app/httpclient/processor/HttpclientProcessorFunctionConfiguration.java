@@ -20,9 +20,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,8 +45,6 @@ import org.springframework.web.client.RestTemplate;
 public class HttpclientProcessorFunctionConfiguration {
 
 	public static final String HTTPCLIENT_PROCESSOR_FUNCTION_NAME = "httpRequest";
-
-	private static final Log LOG = LogFactory.getLog(HttpclientProcessorConfiguration.class);
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -99,8 +94,7 @@ public class HttpclientProcessorFunctionConfiguration {
 				return properties.getReplyExpression().getValue(response);
 			}
 			catch (Exception e) {
-				LOG.warn("Error in HTTP request", e);
-				return null;
+				throw new RuntimeException(e.getMessage(), e);
 			}
 		};
 	}
