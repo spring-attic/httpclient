@@ -17,6 +17,7 @@
 package org.springframework.cloud.stream.app.httpclient.processor;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -56,46 +57,49 @@ public class HttpclientProcessorFunctionConfiguration {
 		HttpclientProcessorProperties properties) {
 
 		return message -> {
-			try {
-				/* construct headers */
-				HttpHeaders headers = new HttpHeaders();
-				if (properties.getHeadersExpression() != null) {
-					Map<?, ?> headersMap = properties.getHeadersExpression().getValue(message, Map.class);
-					for (Map.Entry<?, ?> header : headersMap.entrySet()) {
-						if (header.getKey() != null && header.getValue() != null) {
-							headers.add(header.getKey().toString(),
-								header.getValue().toString());
-						}
+
+			/* construct headers */
+			HttpHeaders headers = new HttpHeaders();
+			if (properties.getHeadersExpression() != null) {
+				Map<?, ?> headersMap = properties.getHeadersExpression().getValue(message, Map.class);
+				for (Map.Entry<?, ?> header : headersMap.entrySet()) {
+					if (header.getKey() != null && header.getValue() != null) {
+						headers.add(header.getKey().toString(),
+							header.getValue().toString());
 					}
 				}
-
-				Class<?> responseType = properties.getExpectedResponseType();
-				HttpMethod method = null;
-				if (properties.getHttpMethodExpression() != null) {
-					method = properties.getHttpMethodExpression().getValue(message, HttpMethod.class);
-				}
-				else {
-					method = properties.getHttpMethod();
-				}
-				String url = properties.getUrlExpression().getValue(message, String.class);
-				Object body = null;
-				if (properties.getBody() != null) {
-					body = properties.getBody();
-				}
-				else if (properties.getBodyExpression() != null) {
-					body = properties.getBodyExpression().getValue(message);
-				}
-				else {
-					body = message.getPayload();
-				}
-				URI uri = new URI(url);
-				RequestEntity<?> request = new RequestEntity<>(body, headers, method, uri);
-				ResponseEntity<?> response = restTemplate.exchange(request, responseType);
-				return properties.getReplyExpression().getValue(response);
 			}
-			catch (Exception e) {
+
+			Class<?> responseType = properties.getExpectedResponseType();
+			HttpMethod method = null;
+			if (properties.getHttpMethodExpression() != null) {
+				method = properties.getHttpMethodExpression().getValue(message, HttpMethod.class);
+			}
+			else {
+				method = properties.getHttpMethod();
+			}
+			String url = properties.getUrlExpression().getValue(message, String.class);
+			Object body = null;
+			if (properties.getBody() != null) {
+				body = properties.getBody();
+			}
+			else if (properties.getBodyExpression() != null) {
+				body = properties.getBodyExpression().getValue(message);
+			}
+			else {
+				body = message.getPayload();
+			}
+
+			URI uri;
+			try {
+				uri = new URI(url);
+			}
+			catch (URISyntaxException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
+			RequestEntity<?> request = new RequestEntity<>(body, headers, method, uri);
+			ResponseEntity<?> response = restTemplate.exchange(request, responseType);
+			return properties.getReplyExpression().getValue(response);
 		};
 	}
 }
