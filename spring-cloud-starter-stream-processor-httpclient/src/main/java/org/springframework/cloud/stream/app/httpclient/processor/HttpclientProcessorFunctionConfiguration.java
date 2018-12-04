@@ -28,7 +28,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -45,15 +44,15 @@ import org.springframework.web.client.RestTemplate;
 @EnableConfigurationProperties(HttpclientProcessorProperties.class)
 public class HttpclientProcessorFunctionConfiguration {
 
-	public static final String HTTPCLIENT_PROCESSOR_FUNCTION_NAME = "httpRequest";
+	public static final String FUNCTION_NAME = "spring.cloud.streamapp.httpclient.processor";
 
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
 
-	@Bean(name = HTTPCLIENT_PROCESSOR_FUNCTION_NAME)
-	public Function<Message<?>, Object> httpRequest(RestTemplate restTemplate,
+	@Bean(name = FUNCTION_NAME)
+	public HttpclientProcessorFunction httpRequest(RestTemplate restTemplate,
 		HttpclientProcessorProperties properties) {
 
 		return message -> {
@@ -94,9 +93,11 @@ public class HttpclientProcessorFunctionConfiguration {
 			try {
 				uri = new URI(url);
 			}
+
 			catch (URISyntaxException e) {
 				throw new IllegalStateException(e.getMessage(), e);
 			}
+
 			RequestEntity<?> request = new RequestEntity<>(body, headers, method, uri);
 			ResponseEntity<?> response = restTemplate.exchange(request, responseType);
 			return properties.getReplyExpression().getValue(response);
