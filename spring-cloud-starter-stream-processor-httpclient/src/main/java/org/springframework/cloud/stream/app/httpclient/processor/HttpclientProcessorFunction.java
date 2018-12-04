@@ -23,6 +23,6 @@ import org.springframework.messaging.Message;
 /**
  * @author David Turanski
  **/
-public interface HttpClientProcessorFunction extends Function<Message<?>, Object> {
+public interface HttpclientProcessorFunction extends Function<Message<?>, Object> {
 
 }

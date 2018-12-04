@@ -52,7 +52,7 @@ public class HttpclientProcessorFunctionConfiguration {
 	}
 
 	@Bean(name = FUNCTION_NAME)
-	public HttpClientProcessorFunction httpRequest(RestTemplate restTemplate,
+	public HttpclientProcessorFunction httpRequest(RestTemplate restTemplate,
 		HttpclientProcessorProperties properties) {
 
 		return message -> {
