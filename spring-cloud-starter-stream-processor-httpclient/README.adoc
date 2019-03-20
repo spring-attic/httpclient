@@ -62,9 +62,9 @@ $ ./mvnw clean package
 
 [source,bash]
 ----
-$ java -jar httpclient-processor.jar --httpclient.url=http://someurl  --httpclient.http-method=POST --httpclient.headers-expression="{'Content-Type':'application/json'}"
+$ java -jar httpclient-processor.jar --httpclient.url=https://someurl  --httpclient.http-method=POST --httpclient.headers-expression="{'Content-Type':'application/json'}"
 
-$ java -jar httpclient-processor.jar --httpclient.url=http://someurl  --httpclient.reply-expression="statusCode.name()"
+$ java -jar httpclient-processor.jar --httpclient.url=https://someurl  --httpclient.reply-expression="statusCode.name()"
 
 ----
 //end::ref-doc[]
