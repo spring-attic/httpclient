@@ -45,6 +45,10 @@ $$httpclient.http-method-expression$$:: $$A SpEL expression to derive the reques
 $$httpclient.reply-expression$$:: $$A SpEL expression used to compute the final result, applied against the whole http response.$$ *($$Expression$$, default: `$$body$$`)*
 $$httpclient.url$$:: $$The URL to issue an http request to, as a static value.$$ *($$String$$, default: `$$<none>$$`)*
 $$httpclient.url-expression$$:: $$A SpEL expression against incoming message to determine the URL to use.$$ *($$Expression$$, default: `$$<none>$$`)*
+$$httpclient.retry.enabled$$:: $$Whether retries are enabled around HTTP requests.$$ *($$boolean$$, default: `$$false$$`)*
+$$httpclient.retry.maxAttempts$$:: $$Maximum number of attempts to deliver a message.$$ *($$int$$, default: `$$3$$`)*
+$$httpclient.retry.initialInterval$$:: $$Duration between the first and second attempt to deliver a message.$$ *($$Duration$$, default: `$$1000ms$$`)*
+$$httpclient.retry.maxInterval$$:: $$Maximum duration between attempts.$$ *($$Duration$$, default: `$$10000ms$$`)*
 //end::configuration-properties[]
 
 == Build
