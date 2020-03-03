@@ -51,6 +51,7 @@
 							<extraTestConfigClass>org.springframework.cloud.stream.app.test.httpclient.HttpClientProcessorTestConfiguration.class</extraTestConfigClass>
 						</httpclient-processor>
 					</generatedApps>
+					<enableContainerImageMetadata>true</enableContainerImageMetadata>
 				</configuration>
 			</plugin>
 		</plugins>
